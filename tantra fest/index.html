@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TANTRA 2026 | TNDALU MongoDB</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #FF0000; --bg: #000; --glass: rgba(255,255,255,0.05); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
+        nav { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 1.2rem 8%; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .logo { font-family: 'Orbitron'; font-weight: 700; color: #fff; text-decoration: none; font-size: 1.5rem; }
+        .logo span { color: var(--primary); }
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle at center, #200 0%, #000 100%); }
+        .container { max-width: 600px; margin: 100px auto; padding: 40px; background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; }
+        .form-group { margin-bottom: 20px; }
+        input, select { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid #333; color: #fff; border-radius: 5px; }
+        .btn { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; font-family: 'Orbitron'; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn:hover { background: #cc0000; transform: scale(1.02); }
+        #responseMessage { text-align: center; margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <nav><a href="#" class="logo">TAN<span>TRA</span></a></nav>
+
+    <div class="container">
+        <h2 style="font-family:'Orbitron'; margin-bottom: 20px; text-align: center;">REGISTRATION</h2>
+        <form id="mongoForm">
+            <div class="form-group"><input type="text" name="name" placeholder="Full Name" required></div>
+            <div class="form-group"><input type="email" name="email" placeholder="Email Address" required></div>
+            <div class="form-group">
+                <select name="event" required>
+                    <option value="" disabled selected>Select Event</option>
+                    <option value="Vivad">VIVAD (Debate)</option>
+                    <option value="Rhythm">THE RHYTHM (Dance)</option>
+                </select>
+            </div>
+            <div class="form-group"><input type="text" name="phone" placeholder="Phone Number" required></div>
+            <button type="submit" class="btn">SECURE SUBMIT</button>
+            <p id="responseMessage"></p>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('mongoForm');
+        const msg = document.getElementById('responseMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            msg.innerText = "Connecting to MongoDB Atlas...";
+            msg.style.color = "yellow";
+
+            const data = Object.fromEntries(new FormData(form).entries());
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    msg.style.color = "#00FF00";
+                    msg.innerText = "SUCCESS! Recorded in Cloud Database.";
+                    form.reset();
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (err) {
+                msg.style.color = "#FF0000";
+                msg.innerText = "Error: " + err.message;
+            }
+        });
+    </script>
+</body>
+</html>
